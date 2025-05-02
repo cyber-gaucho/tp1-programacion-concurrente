@@ -30,7 +30,7 @@ public class Casillero {
         this.estado = Estado.VACIO;
     }
 
-    public void fuerar(){
+    public void fueraDeServicio(){
         this.estado = Estado.FUERA_DE_SERVICIO;
     }
 
