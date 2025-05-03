@@ -1,81 +1,62 @@
 package org.example;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-/*public class Main {
-    public static void main(String[] args) {
-        CentroDeAlmacenamiento Galponcito200 = new CentroDeAlmacenamiento("Galponcito", 10, 20);
+public class Main {
 
-        System.out.println(Galponcito200);
+    /*
+    public static void main(String[] args) {
+        CentroDeAlmacenamiento galponcito200 = new CentroDeAlmacenamiento("Galponcito", 10, 20);
+
+        System.out.println(galponcito200);
 
         for (int i = 0; i < 200; i++) {
-            Galponcito200.obtenerCasillero().ocupar();
+            galponcito200.obtenerCasillero().ocupar();
         } //Ocupamos toditos los casilleros
 
-        System.out.println(Galponcito200);
+        System.out.println(galponcito200);
 
         try{
-            Galponcito200.obtenerCasillero().ocupar();
+            galponcito200.obtenerCasillero().ocupar();
         }
         catch (NullPointerException e){
             System.out.println("Apa");
         }
     }
-}*/
-/*public class Main {
+    */
+
     public static void main(String[] args) {
-        // Crear el centro de almacenamiento con 5 filas y 5 columnas
-        CentroDeAlmacenamiento galponcito = new CentroDeAlmacenamiento("Galponcito", 10, 20);
 
-        // Imprimir estado inicial
-        System.out.println("Estado inicial:");
-        System.out.println(galponcito);
+        int CANTIDAD_PEDIDOS = 50;
+        ArrayList<Pedido> pedidosNuevos = new ArrayList<>();
+        ArrayList<Pedido> pedidosPreparados = new ArrayList<>();
+        CentroDeAlmacenamiento galponcito200 = new CentroDeAlmacenamiento("Galponcito", 10, 20);
 
-        // Intentar ocupar casilleros aleatorios
-        System.out.println("\nOcupando casilleros aleatorios...");
-        for (int i = 0; i < 25; i++) {
-            Casillero casillero = galponcito.obtenerCasillero();
-            if (casillero != null) {
-                System.out.println("Casillero ocupado: " + casillero);
-            } else {
-                System.out.println("No hay más casilleros disponibles.");
-            }
+        for(int i = 1 ; i <= CANTIDAD_PEDIDOS ; i++){
+            pedidosNuevos.add(new Pedido());
         }
 
-        // Imprimir estado final
-        System.out.println("\nEstado final:");
-        System.out.println(galponcito);
-    }
-}*/
+        Preparador preparador1 = new Preparador(pedidosNuevos, pedidosPreparados, galponcito200);
+        Preparador preparador2 = new Preparador(pedidosNuevos, pedidosPreparados, galponcito200);
+        Preparador preparador3 = new Preparador(pedidosNuevos, pedidosPreparados, galponcito200);
 
-public class Main {
-    public static void main(String[] args) {
-        CentroDeAlmacenamiento centro = new CentroDeAlmacenamiento("Galponcito", 10, 20);
+        preparador1.start();
+        preparador2.start();
+        preparador3.start();
 
-        List<HiloPreparacionPedido> hilos = new ArrayList<>();
-
-        // Crear 3 hilos para preparar los pedidos
-        for (int i = 0; i < 10; i++) {
-            // Simulamos que los pedidos son creados de alguna forma
-            Pedido pedido = new Pedido();
-
-            // Crear el hilo para preparar el pedido
-            HiloPreparacionPedido hilo = new HiloPreparacionPedido(centro, pedido);
-            hilos.add(hilo);  // Añadir el hilo a la lista
-            hilo.start();  // Iniciar el hilo de preparación de pedidos
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
-        // Esperar que todos los hilos terminen
-        for (HiloPreparacionPedido hilo : hilos) {
-            try {
-                hilo.join();  // Esperamos a que el hilo termine su ejecución
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        preparador1.interrupt();
+        preparador2.interrupt();
+        preparador3.interrupt();
 
-        // Mostrar el estado final de los casilleros
-        System.out.println(centro);
+        System.out.println("\nPedidos preparados: " + pedidosPreparados.size());
+        System.out.println(galponcito200);
     }
 }
 

@@ -1,6 +1,6 @@
 package org.example;
 
-public enum Estado {
+public enum EstadoCasillero {
     VACIO,
     OCUPADO,
     FUERA_DE_SERVICIO
