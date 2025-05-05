@@ -1,17 +1,19 @@
 package org.example;
 
 public class Casillero {
-    private Estado estado;
+    private EstadoCasillero estado;
     private Integer contador;
+    private String id;
 
-    public Casillero(){
-        this.estado = Estado.VACIO;
+    public Casillero(int i, int j){
+        this.estado = EstadoCasillero.VACIO;
         this.contador = 0;
+        this.id = i + "-" + j;
     }
 
     // Getters
 
-    public Estado getEstado(){
+    public EstadoCasillero getEstado(){
         return estado;
     }
 
@@ -22,16 +24,20 @@ public class Casillero {
     // Modificadores de Estado
 
     public void ocupar(){
-        this.estado = Estado.OCUPADO;
+        this.estado = EstadoCasillero.OCUPADO;
         this.contador++;
     }
 
     public void vaciar(){
-        this.estado = Estado.VACIO;
+        this.estado = EstadoCasillero.VACIO;
     }
 
-    public void fuerar(){
-        this.estado = Estado.FUERA_DE_SERVICIO;
+    public void fueraDeServicio(){
+        this.estado = EstadoCasillero.FUERA_DE_SERVICIO;
+    }
+
+    public String getId(){
+        return id;
     }
 
     @Override
