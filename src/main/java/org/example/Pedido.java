@@ -36,6 +36,12 @@ public class Pedido {
 
     public void setEstado(EstadoPedido estado) {
         this.estado = estado;
+        if(estado == EstadoPedido.EN_TRANSITO ){
+            casillero.vaciar();
+        }
+        if(estado == EstadoPedido.FALLIDO){
+            if(casillero != null) casillero.fueraDeServicio();
+        }
     }
 
     @Override
