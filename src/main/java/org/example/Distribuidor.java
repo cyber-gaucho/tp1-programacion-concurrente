@@ -19,10 +19,19 @@ public abstract class Distribuidor extends Thread {
 
     protected abstract double getProbabilidadFallo();
     protected abstract void cambiarEstado(Pedido pedido);
+    protected abstract String mensajeExito();
     protected void fallarPedido(Pedido pedido){
         pedido.setEstado(EstadoPedido.FALLIDO);
     }
-    protected abstract String mensajeExito();
+    protected long getTiempoDeEspera(){
+        double media = 100;
+        double desviacion = 10;
+        double delay = media + desviacion * random.nextGaussian();
+        delay = Math.max(50, Math.min(150, delay)); //propone valores maximos y minimos para el delay
+        
+        return (long) delay;
+    }
+
     @Override
     public void run(){
         while(!Thread.currentThread().isInterrupted()){
@@ -35,7 +44,6 @@ public abstract class Distribuidor extends Thread {
                     fallidos.offer(pedido); // .offer() no tira exception
 
                     //System.out.println(this + ": Falló el " + pedido);
-
                 }
                 else {
                     cambiarEstado(pedido);
@@ -43,12 +51,16 @@ public abstract class Distribuidor extends Thread {
                     //System.out.println(mensajeExito() + pedido);
                 }
 
+                Thread.sleep(getTiempoDeEspera());
             } catch (ListaVaciaException e) {
                 try {
-                    Thread.sleep(100); // espera 100 ms antes de reintentar
+                    //System.out.println(this + ":ERROR LISTA VACIA");
+                    Thread.sleep(200); // espera antes de reintentar
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt(); // importante: respetar la interrupción
                 }
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt(); // importante: respetar la interrupción
             }
         }
     }

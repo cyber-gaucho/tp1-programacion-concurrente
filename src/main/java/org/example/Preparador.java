@@ -15,8 +15,6 @@ public class Preparador extends Thread {
     private final CentroDeAlmacenamiento centro;
     private volatile boolean isActivo = true;
     private final Random random = new Random();
-    private final Object lockPedidos = new Object();
-
 
     public Preparador(LinkedBlockingDeque<Pedido> pedidosNuevos, LinkedBlockingDeque<Pedido> pedidosPreparados, CentroDeAlmacenamiento centro) {
         this.id = ++contador;
@@ -24,11 +22,7 @@ public class Preparador extends Thread {
         this.pedidosPreparados = pedidosPreparados;
         this.centro = centro;
     }
-    @Override
-    public String toString(){
-        return "Preparador " + id;
-    }
-
+    
     @Override
     public void run() {
         while(isActivo && !Thread.currentThread().isInterrupted()){
@@ -43,13 +37,16 @@ public class Preparador extends Thread {
 
                 pedido.setEstado(EstadoPedido.PREPARADO);
                 pedido.setCasillero(casillero); //Esto también ocupa el casillero con casillero.ocupar()
-
+                
                 pedidosPreparados.put(pedido);
                 //System.out.println(this + ": Se preparó el " + pedido);
+                
+                Thread.sleep(getTiempoDeEspera());
 
             } catch (noHayCasillerosDisponiblesException e) {
                 try {
-                    Thread.sleep(100);
+                    //System.out.println(this + ": ERROR noHayCasillerosDisponibles");
+                    Thread.sleep(150);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                     return;
@@ -60,7 +57,7 @@ public class Preparador extends Thread {
             }
         }
     }
-
+    
     private Pedido obtenerPedidoAleatorio(LinkedBlockingDeque<Pedido> deque) {
         synchronized (deque) {
             if (deque.isEmpty()) return null;
@@ -69,8 +66,22 @@ public class Preparador extends Thread {
             int index = random.nextInt(snapshot.size()); // prepara el indice random
             Pedido elegido = snapshot.get(index); // obtiene el objeto Pedido random que queremos sacar
             deque.remove(elegido);  // elimina solo ese pedido
-
+          
             return elegido;
         }
+    }
+
+    private long getTiempoDeEspera(){
+        double media = 75;
+        double desviacion = 10;
+        double delay = media + desviacion * random.nextGaussian();
+        delay = Math.max(25, Math.min(125, delay)); //propone valores maximos y minimos para el delay
+        
+        return (long) delay;
+    }
+
+    @Override
+    public String toString(){
+        return "Preparador " + id;
     }
 }
