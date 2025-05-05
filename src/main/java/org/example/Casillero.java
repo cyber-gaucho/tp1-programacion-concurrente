@@ -3,10 +3,12 @@ package org.example;
 public class Casillero {
     private EstadoCasillero estado;
     private Integer contador;
+    private String id;
 
-    public Casillero(){
+    public Casillero(int i, int j){
         this.estado = EstadoCasillero.VACIO;
         this.contador = 0;
+        this.id = i + "-" + j;
     }
 
     // Getters
@@ -32,6 +34,10 @@ public class Casillero {
 
     public void fueraDeServicio(){
         this.estado = EstadoCasillero.FUERA_DE_SERVICIO;
+    }
+
+    public String getId(){
+        return id;
     }
 
     @Override

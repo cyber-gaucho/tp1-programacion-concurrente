@@ -11,7 +11,7 @@ public class CentroDeAlmacenamiento {
         matriz = new Casillero[alto][ancho];
         for (int i = 0; i < alto; i++) {
             for (int j = 0; j < ancho; j++) {
-                matriz[i][j] = new Casillero();
+                matriz[i][j] = new Casillero(i,j);
             }
         }
         this.nombre = nombreCentro;
