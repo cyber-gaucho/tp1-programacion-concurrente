@@ -44,7 +44,6 @@ public abstract class Distribuidor extends Thread {
                     fallidos.offer(pedido); // .offer() no tira exception
 
                     //System.out.println(this + ": Falló el " + pedido);
-
                 }
                 else {
                     cambiarEstado(pedido);

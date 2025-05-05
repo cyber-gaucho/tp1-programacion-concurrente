@@ -112,6 +112,7 @@ public class Main {
         Entregador entregador3 = new Entregador(pedidosEnTransito, pedidosEntregados, pedidosFallidos);
         Verificador verificador1 = new Verificador(pedidosEntregados, pedidosVerificados, pedidosFallidos);
         Verificador verificador2 = new Verificador(pedidosEntregados, pedidosVerificados, pedidosFallidos);
+
         
         BufferedWriter txtWriter = null;
         BufferedWriter csvWriter = null;
@@ -165,6 +166,7 @@ public class Main {
             }
         }
 
+
         preparador1.interrupt();
         preparador2.interrupt();
         preparador3.interrupt();
@@ -205,15 +207,6 @@ public class Main {
                 e.printStackTrace();
             }
         }
-
-
-//        for(Pedido indice : pedidosVerificados){
-//            System.out.println(indice);
-//        }
-
-//        for(Pedido indice : pedidosFallidos){
-//            System.out.println(indice);
-//        }
     }
 
     private static void escribirLog(BufferedWriter writer, String linea) throws IOException {
@@ -221,7 +214,6 @@ public class Main {
         writer.newLine();
         writer.flush();
     }
-
 }
 
 

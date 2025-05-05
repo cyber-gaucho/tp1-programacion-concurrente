@@ -29,12 +29,12 @@ public class Preparador extends Thread {
             try {
                 Casillero casillero = centro.obtenerCasillero();
                 Pedido pedido = obtenerPedidoAleatorio(pedidosNuevos);
-                
+
                 if (pedido == null) {
                     isActivo = false;
                     break;
                 }
-                
+
                 pedido.setEstado(EstadoPedido.PREPARADO);
                 pedido.setCasillero(casillero); //Esto también ocupa el casillero con casillero.ocupar()
                 
@@ -61,12 +61,12 @@ public class Preparador extends Thread {
     private Pedido obtenerPedidoAleatorio(LinkedBlockingDeque<Pedido> deque) {
         synchronized (deque) {
             if (deque.isEmpty()) return null;
-            
+
             List<Pedido> snapshot = new ArrayList<>(deque); // copia la deque a una arraylist
             int index = random.nextInt(snapshot.size()); // prepara el indice random
             Pedido elegido = snapshot.get(index); // obtiene el objeto Pedido random que queremos sacar
             deque.remove(elegido);  // elimina solo ese pedido
-            
+          
             return elegido;
         }
     }
