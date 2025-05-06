@@ -1,0 +1,123 @@
+@startuml
+
+' Enumeraciones
+enum EstadoPedido {
+    NUEVO
+    PREPARADO
+    EN_TRANSITO
+    ENTREGADO
+    VERIFICADO
+    FALLIDO
+}
+
+enum EstadoCasillero {
+    VACIO
+    OCUPADO
+    FUERA_DE_SERVICIO
+}
+
+
+
+' Clases
+class Pedido {
+    - int id
+    - Casillero casillero
+    - EstadoPedido estado
+    + Pedido()
+    + Pedido(int id)
+    + int getId()
+    + void setCasillero(Casillero casillero)
+    + Casillero getCasillero()
+    + EstadoPedido getEstado()
+    + void setEstado(EstadoPedido estado)
+}
+
+class Casillero {
+    - int id
+    - EstadoCasillero estado
+    + Casillero(int id)
+    + void ocupar()
+    + void vaciar()
+    + void fueraDeServicio()
+    + boolean estaDisponible()
+    + String toString()
+}
+
+class CentroDeAlmacenamiento {
+    - String nombre
+    - List<Casillero> casilleros
+    + CentroDeAlmacenamiento(String nombre, int cantidad)
+    + Casillero obtenerCasillero() throws NoHayCasillerosDisponiblesException
+    + String toString()
+}
+
+abstract class Distribuidor {
+    - LinkedBlockingDeque<Pedido> origen
+    - LinkedBlockingDeque<Pedido> exitosos
+    - LinkedBlockingDeque<Pedido> fallidos
+    + run()
+    # double getProbabilidadFallo()
+    # void cambiarEstado(Pedido pedido)
+    # String mensajeExito()
+    # void fallarPedido(Pedido pedido)
+    # long getTiempoDeEspera()
+}
+
+class Preparador {
+    - int id
+    - LinkedBlockingDeque<Pedido> pedidosNuevos
+    - LinkedBlockingDeque<Pedido> pedidosPreparados
+    - CentroDeAlmacenamiento centro
+    + run()
+    + String toString()
+}
+class Main {
+    + main(String[] args)
+    + escribirLog(BufferedWriter writer, String linea)
+}
+
+
+class Despachador
+class Entregador
+class Verificador
+
+' Relaciones de herencia
+Distribuidor --|> Thread
+
+Distribuidor <|-- Despachador
+Distribuidor <|-- Entregador
+Distribuidor <|-- Verificador
+
+
+
+' Relaciones de uso y asociación
+Preparador --> Pedido
+Preparador --> CentroDeAlmacenamiento
+Preparador --> Casillero
+Preparador --|> Thread
+
+Pedido --> Casillero
+Pedido --> EstadoPedido
+
+Casillero --> EstadoCasillero
+
+CentroDeAlmacenamiento --> Casillero
+
+Distribuidor --> Pedido
+
+Main --> Pedido
+Main --> Preparador
+Main --> Despachador
+Main --> Entregador
+Main --> Verificador
+Main --> CentroDeAlmacenamiento
+Main --> EstadoPedido
+Main --> Casillero
+
+Despachador --> Pedido
+Entregador --> Pedido
+Verificador --> Pedido
+
+
+
+@enduml
