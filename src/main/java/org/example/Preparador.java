@@ -72,10 +72,11 @@ public class Preparador extends Thread {
     }
 
     private long getTiempoDeEspera(){
-        double media = 75;
-        double desviacion = 10;
-        double delay = media + desviacion * random.nextGaussian();
-        delay = Math.max(25, Math.min(125, delay)); //propone valores maximos y minimos para el delay
+        double media = 80;
+        double desviacion = 15;
+        double delay = media + desviacion * random.nextGaussian();//random.nextGaussian() devuelve
+        // un doble a partir de una distribución normal con media cera y desvío estándar 1
+        delay = Math.max(50, Math.min(110, delay)); //propone valores maximos y minimos para el delay
         
         return (long) delay;
     }

@@ -24,10 +24,11 @@ public abstract class Distribuidor extends Thread {
         pedido.setEstado(EstadoPedido.FALLIDO);
     }
     protected long getTiempoDeEspera(){
-        double media = 100;
-        double desviacion = 10;
-        double delay = media + desviacion * random.nextGaussian();
-        delay = Math.max(50, Math.min(150, delay)); //propone valores maximos y minimos para el delay
+        double media = 80;
+        double desviacion = 15;
+        double delay = media + desviacion * random.nextGaussian(); //random.nextGaussian() devuelve
+        // un doble a partir de una distribución normal con media cera y desvío estándar 1
+        delay = Math.max(50, Math.min(110, delay)); //propone valores máximos y mínimos para el delay
         
         return (long) delay;
     }
