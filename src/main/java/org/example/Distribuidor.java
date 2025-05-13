@@ -25,7 +25,7 @@ public abstract class Distribuidor implements Runnable {
         double media = 80;
         double desviacion = 15;
         double delay = media + desviacion * random.nextGaussian(); //random.nextGaussian() devuelve
-        // un doble a partir de una distribución normal con media cera y desvío estándar 1
+        // un double a partir de una distribución normal con media 0 y desvío estándar 1
         delay = Math.max(50, Math.min(110, delay)); //propone valores máximos y mínimos para el delay
         
         return (long) delay;

@@ -18,6 +18,7 @@ public class Despachador extends Distribuidor{
     @Override
     protected void trabajar(Pedido pedido) {
         pedido.setEstado(EstadoPedido.EN_TRANSITO);
+        pedido.getCasillero().vaciar();
     }
 
     @Override

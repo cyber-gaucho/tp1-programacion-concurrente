@@ -24,6 +24,13 @@ public class Casillero {
     // Modificadores de Estado
 
     public void ocupar(){
+        // Si se intenta ocupar un casillero que no está vacio, se lanza un error
+        // if(this.estado != EstadoCasillero.VACIO){
+        //     System.out.println("=====================================");
+        //     System.out.println("\nError en el casillero " + id +".\n");
+        //     System.out.println("=====================================\n");
+        // }
+        
         this.estado = EstadoCasillero.OCUPADO;
         this.contador++;
     }

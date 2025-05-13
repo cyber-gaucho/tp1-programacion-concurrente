@@ -40,11 +40,48 @@ public class CentroDeAlmacenamiento {
             int j = idx % columnas;
             Casillero c = matriz[i][j];
             if (c.getEstado() == EstadoCasillero.VACIO) {
+                c.ocupar();
                 return c;
             }
         }
     
         throw new noHayCasillerosDisponiblesException();
+    }
+
+    public int getCasillerosOcupados() {
+        int ocupados = 0;
+        for (Casillero[] casilleros : matriz) {
+            for (Casillero c : casilleros) {
+                if (c.getEstado() == EstadoCasillero.OCUPADO) {
+                    ocupados++;
+                }
+            }
+        }
+        return ocupados;
+    }
+
+    public int getCasillerosDisponibles() {
+        int disponibles = 0;
+        for (Casillero[] casilleros : matriz) {
+            for (Casillero c : casilleros) {
+                if (c.getEstado() == EstadoCasillero.VACIO) {
+                    disponibles++;
+                }
+            }
+        }
+        return disponibles;
+    }
+
+    public int getCasillerosFueraDeServicio() {
+        int fueraDeServicio = 0;
+        for (Casillero[] casilleros : matriz) {
+            for (Casillero c : casilleros) {
+                if (c.getEstado() == EstadoCasillero.FUERA_DE_SERVICIO) {
+                    fueraDeServicio++;
+                }
+            }
+        }
+        return fueraDeServicio;
     }
 
     @Override
@@ -58,6 +95,10 @@ public class CentroDeAlmacenamiento {
             }
             sb.append("\n");
         }
+        sb.append("Total de casilleros: ").append(matriz.length * matriz[0].length).append("\n");
+        sb.append("Total de casilleros ocupados: ").append(getCasillerosOcupados()).append("\n");
+        sb.append("Total de casilleros disponibles: ").append(getCasillerosDisponibles()).append("\n");
+        sb.append("Total de casilleros fuera de servicio: ").append(getCasillerosFueraDeServicio()).append("\n");
         return sb.toString();
     }
 }

@@ -23,7 +23,6 @@ public class Pedido {
 
     public void setCasillero(Casillero casillero) {
         this.casillero = casillero;
-        casillero.ocupar();
     }
 
     public Casillero getCasillero() {
@@ -36,9 +35,6 @@ public class Pedido {
 
     public void setEstado(EstadoPedido estado) {
         this.estado = estado;
-        if(estado == EstadoPedido.EN_TRANSITO ){
-            casillero.vaciar();
-        }
     }
 
     @Override

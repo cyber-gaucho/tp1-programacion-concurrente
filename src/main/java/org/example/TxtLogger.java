@@ -20,4 +20,8 @@ public class TxtLogger extends AbstractLogWriter {
         write(lineaTxt);
     }
 
+    public void escribir(String mensaje) throws IOException {
+        write(mensaje);
+    }
+
 }

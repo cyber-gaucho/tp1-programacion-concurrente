@@ -81,15 +81,15 @@ public class Preparador implements Runnable {
                 Pedido pedido;
                 synchronized (pedidosNuevos) {
                     if (!pedidosNuevos.isEmpty()) {
-                        pedido = pedidosNuevos.remove(random.nextInt(Math.max(pedidosNuevos.size(), 1)));
+                        pedido = pedidosNuevos.remove(random.nextInt(Math.max(pedidosNuevos.size(),1)));
                     } else {
                         throw new ListaVaciaException("La lista de pedidos nuevos está vacía.");
                     }
                 }
 
                 try {
-                    Casillero casillero = centro.obtenerCasillero(); // May throw noHayCasillerosDisponiblesException
-                    pedido.setCasillero(casillero); // Occupies the casillero
+                    Casillero casillero = centro.obtenerCasillero(); // Puede tirar noHayCasillerosDisponiblesException
+                    pedido.setCasillero(casillero); // Ya no ocupa el casillero
                     pedido.setEstado(EstadoPedido.PREPARADO);
 
                     synchronized (pedidosPreparados) {
@@ -99,7 +99,7 @@ public class Preparador implements Runnable {
 
                     Thread.sleep(getTiempoDeEspera());
                 } catch (noHayCasillerosDisponiblesException e) {
-                    // Return the pedido to pedidosNuevos if no casillero is available
+                    // Devuelve el pedido a pedidosNuevos si no hay casillero disponible
                     synchronized (pedidosNuevos) {
                         pedidosNuevos.add(pedido);
                     }
@@ -108,7 +108,7 @@ public class Preparador implements Runnable {
                 }
 
             } catch (ListaVaciaException e) {
-                // When the list of new pedidos is empty, terminate the thread
+                // Cuando la lista de pedidos nuevos está vacía, finaliza el hilo.
                 System.out.println(this + ": Se acabaron los pedidos nuevos. Fin del hilo.");
                 Thread.currentThread().interrupt();
                 return;
@@ -123,7 +123,7 @@ public class Preparador implements Runnable {
         double media = 80;
         double desviacion = 15;
         double delay = media + desviacion * random.nextGaussian();//random.nextGaussian() devuelve
-        // un doble a partir de una distribución normal con media cera y desvío estándar 1
+        // un double a partir de una distribución normal con media 0 y desvío estándar 1
         delay = Math.max(50, Math.min(110, delay)); //propone valores maximos y minimos para el delay
         
         return (long) delay;
