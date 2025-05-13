@@ -39,9 +39,6 @@ public class Pedido {
         if(estado == EstadoPedido.EN_TRANSITO ){
             casillero.vaciar();
         }
-        if(estado == EstadoPedido.FALLIDO){
-            if(casillero != null) casillero.fueraDeServicio();
-        }
     }
 
     @Override

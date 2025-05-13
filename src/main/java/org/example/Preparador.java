@@ -1,73 +1,121 @@
 package org.example;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.LinkedBlockingDeque;
+import org.example.excepciones.ListaVaciaException;
+import org.example.excepciones.noHayCasillerosDisponiblesException;
 
-public class Preparador extends Thread {
+public class Preparador implements Runnable {
 
     private static int contador = 0;
     private final int id;
 
-    private final LinkedBlockingDeque<Pedido> pedidosNuevos;
-    private final LinkedBlockingDeque<Pedido> pedidosPreparados;
+    private final SynchronizedList<Pedido> pedidosNuevos;
+    private final SynchronizedList<Pedido> pedidosPreparados;
     private final CentroDeAlmacenamiento centro;
     private volatile boolean isActivo = true;
     private final Random random = new Random();
 
-    public Preparador(LinkedBlockingDeque<Pedido> pedidosNuevos, LinkedBlockingDeque<Pedido> pedidosPreparados, CentroDeAlmacenamiento centro) {
+    public Preparador(SynchronizedList<Pedido> pedidosNuevos, SynchronizedList<Pedido> pedidosPreparados, CentroDeAlmacenamiento centro) {
         this.id = ++contador;
         this.pedidosNuevos = pedidosNuevos;
         this.pedidosPreparados = pedidosPreparados;
         this.centro = centro;
     }
     
+    // @Override
+    // public void run() {
+    //     while(isActivo && !Thread.currentThread().isInterrupted()){
+    //         try {
+    //             Pedido pedido;
+    //             // if(!pedidosNuevos.isEmpty()) {
+    //             //     pedido = pedidosNuevos.remove(random.nextInt(Math.max(pedidosNuevos.size(), 1)));
+    //             // } else {
+    //             //     throw new ListaVaciaException("La lista de pedidos nuevos está vacía.");
+    //             // }
+
+    //             synchronized (pedidosNuevos) {
+    //                 if (!pedidosNuevos.isEmpty()) {
+    //                     pedido = pedidosNuevos.remove(random.nextInt(Math.max(pedidosNuevos.size(), 1)));
+    //                 } else {
+    //                     throw new ListaVaciaException("La lista de pedidos nuevos está vacía.");
+    //                 }
+    //             }
+
+
+
+    //             try {
+    //                 Casillero casillero = centro.obtenerCasillero();
+    //                 pedido.setCasillero(casillero); //Esto también ocupa el casillero con casillero.ocupar()                
+    //                 pedido.setEstado(EstadoPedido.PREPARADO);
+                    
+    //                 synchronized (pedidosPreparados) {
+    //                     pedidosPreparados.add(pedido);
+    //                 }
+    //                 // System.out.println(this + ": Se preparó el " + pedido);                
+    //                 Thread.sleep(getTiempoDeEspera());
+    //             } catch (noHayCasillerosDisponiblesException e) {
+    //                 try {
+    //                     //System.out.println(this + ": ERROR noHayCasillerosDisponibles");
+    //                     Thread.sleep(150);
+    //                 } catch (InterruptedException ex) {
+    //                     Thread.currentThread().interrupt();
+    //                     return;
+    //                 }
+    //             }
+
+    //         } catch (ListaVaciaException e) {
+    //             //Cuando la lista de pedidos nuevos está vacía, finaliza el hilo.
+    //             System.out.println(this + ": Se acabaron los pedidos nuevos. Fin del hilo.");
+    //             Thread.currentThread().interrupt();
+    //             return;
+    //         } catch (InterruptedException e) {
+    //             Thread.currentThread().interrupt();
+    //             return;
+    //         }
+    //     }
+    // }
+
     @Override
     public void run() {
-        while(isActivo && !Thread.currentThread().isInterrupted()){
+        while (isActivo && !Thread.currentThread().isInterrupted()) {
             try {
-                Casillero casillero = centro.obtenerCasillero();
-                Pedido pedido = obtenerPedidoAleatorio(pedidosNuevos);
-
-                if (pedido == null) {
-                    isActivo = false;
-                    break;
+                Pedido pedido;
+                synchronized (pedidosNuevos) {
+                    if (!pedidosNuevos.isEmpty()) {
+                        pedido = pedidosNuevos.remove(random.nextInt(Math.max(pedidosNuevos.size(), 1)));
+                    } else {
+                        throw new ListaVaciaException("La lista de pedidos nuevos está vacía.");
+                    }
                 }
 
-                pedido.setEstado(EstadoPedido.PREPARADO);
-                pedido.setCasillero(casillero); //Esto también ocupa el casillero con casillero.ocupar()
-                
-                pedidosPreparados.put(pedido);
-                //System.out.println(this + ": Se preparó el " + pedido);
-                
-                Thread.sleep(getTiempoDeEspera());
-
-            } catch (noHayCasillerosDisponiblesException e) {
                 try {
-                    //System.out.println(this + ": ERROR noHayCasillerosDisponibles");
-                    Thread.sleep(150);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    return;
+                    Casillero casillero = centro.obtenerCasillero(); // May throw noHayCasillerosDisponiblesException
+                    pedido.setCasillero(casillero); // Occupies the casillero
+                    pedido.setEstado(EstadoPedido.PREPARADO);
+
+                    synchronized (pedidosPreparados) {
+                        pedidosPreparados.add(pedido);
+                    }
+                    // System.out.println(this + ": Se preparó el " + pedido);
+
+                    Thread.sleep(getTiempoDeEspera());
+                } catch (noHayCasillerosDisponiblesException e) {
+                    // Return the pedido to pedidosNuevos if no casillero is available
+                    synchronized (pedidosNuevos) {
+                        pedidosNuevos.add(pedido);
+                    }
+                    // System.out.println(this + ": No hay casilleros disponibles. Pedido devuelto a la lista de nuevos.");
+                    Thread.sleep(100); // Retry delay
                 }
+
+            } catch (ListaVaciaException e) {
+                // When the list of new pedidos is empty, terminate the thread
+                System.out.println(this + ": Se acabaron los pedidos nuevos. Fin del hilo.");
+                Thread.currentThread().interrupt();
+                return;
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
             }
-        }
-    }
-    
-    private Pedido obtenerPedidoAleatorio(LinkedBlockingDeque<Pedido> deque) {
-        synchronized (deque) {
-            if (deque.isEmpty()) return null;
-
-            List<Pedido> snapshot = new ArrayList<>(deque); // copia la deque a una arraylist
-            int index = random.nextInt(snapshot.size()); // prepara el indice random
-            Pedido elegido = snapshot.get(index); // obtiene el objeto Pedido random que queremos sacar
-            deque.remove(elegido);  // elimina solo ese pedido
-          
-            return elegido;
         }
     }
 

@@ -1,24 +1,22 @@
 package org.example;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.LinkedBlockingDeque;
 
-public abstract class Distribuidor extends Thread {
-    protected final LinkedBlockingDeque<Pedido> origen;
-    protected final LinkedBlockingDeque<Pedido> exitosos;
-    protected final LinkedBlockingDeque<Pedido> fallidos;
+import org.example.excepciones.ListaVaciaException;
+
+public abstract class Distribuidor implements Runnable {
+    protected final SynchronizedList<Pedido> origen;
+    protected final SynchronizedList<Pedido> exitosos;
+    protected final SynchronizedList<Pedido> fallidos;
     protected final Random random = new Random();
 
-    public Distribuidor(LinkedBlockingDeque<Pedido> origen, LinkedBlockingDeque<Pedido> exitosos, LinkedBlockingDeque<Pedido> fallidos){
+    public Distribuidor(SynchronizedList<Pedido> origen, SynchronizedList<Pedido> exitosos, SynchronizedList<Pedido> fallidos){
         this.origen = origen;
         this.exitosos = exitosos;
         this.fallidos = fallidos;
     }
 
     protected abstract double getProbabilidadFallo();
-    protected abstract void cambiarEstado(Pedido pedido);
+    protected abstract void trabajar(Pedido pedido);
     protected abstract String mensajeExito();
     protected void fallarPedido(Pedido pedido){
         pedido.setEstado(EstadoPedido.FALLIDO);
@@ -35,28 +33,38 @@ public abstract class Distribuidor extends Thread {
 
     @Override
     public void run(){
+        int contadorExitosos = 0;
+        int contadorFallidos = 0;
         while(!Thread.currentThread().isInterrupted()){
+            
             try {
-                Pedido pedido = obtenerPedidoAleatorio(origen); //devuelve un pedido o tira excepcion
-                cambiarEstado(pedido);
+                Pedido pedido;
+                if(!origen.isEmpty()) {
+                    pedido = origen.remove(random.nextInt(Math.max(origen.size(), 1))); //el argumento de nextInt() debe ser > 0
+                } else {
+                    throw new ListaVaciaException("La lista de origen está vacía.");
+                }
 
                 if (random.nextDouble() < getProbabilidadFallo()){
                     fallarPedido(pedido);
-                    fallidos.offer(pedido); // .offer() no tira exception
-
+                    fallidos.add(pedido);
+                    contadorFallidos++;
                     //System.out.println(this + ": Falló el " + pedido);
                 }
                 else {
-                    cambiarEstado(pedido);
-                    exitosos.offer(pedido);
+                    trabajar(pedido);
+                    exitosos.add(pedido);
+                    contadorExitosos++;
                     //System.out.println(mensajeExito() + pedido);
                 }
 
                 Thread.sleep(getTiempoDeEspera());
+
+            
             } catch (ListaVaciaException e) {
                 try {
                     //System.out.println(this + ":ERROR LISTA VACIA");
-                    Thread.sleep(200); // espera antes de reintentar
+                    Thread.sleep(100); // espera antes de reintentar
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt(); // importante: respetar la interrupción
                 }
@@ -64,19 +72,6 @@ public abstract class Distribuidor extends Thread {
                 Thread.currentThread().interrupt(); // importante: respetar la interrupción
             }
         }
-    }
-
-    private Pedido obtenerPedidoAleatorio(LinkedBlockingDeque<Pedido> deque) throws ListaVaciaException {
-        synchronized (deque) {
-            if (deque.isEmpty()) {
-                throw new ListaVaciaException("");
-            }
-            List<Pedido> snapshot = new ArrayList<>(deque); // copia la deque a una arraylist
-            int index = random.nextInt(snapshot.size()); // prepara el indice random
-            Pedido elegido = snapshot.get(index); // obtiene el objeto Pedido random que queremos sacar
-            deque.remove(elegido);  // elimina solo ese pedido
-
-            return elegido;
-        }
+        System.out.println(this + ": Se procesaron " + contadorExitosos + " pedidos exitosos y " + contadorFallidos + " pedidos fallidos.");
     }
 }
