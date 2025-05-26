@@ -3,7 +3,7 @@ package org.example;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-public class AbstractLogWriter {
+public abstract class AbstractLogWriter {
     protected BufferedWriter writer;
 
     void write(String message) throws IOException{

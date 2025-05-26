@@ -6,14 +6,9 @@ public class Pedido {
     private Casillero casillero;
     private EstadoPedido estado;
 
-
+    
     public Pedido() {
         this.id = ++contador;
-        this.estado = EstadoPedido.NUEVO;
-    }
-
-    public Pedido(int id){
-        this.id = id;
         this.estado = EstadoPedido.NUEVO;
     }
 

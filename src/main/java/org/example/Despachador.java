@@ -1,6 +1,5 @@
 package org.example;
 
-
 public class Despachador extends Distribuidor{
     private static int contador = 0;
     private final int id;

@@ -6,9 +6,7 @@ import java.io.IOException;
 
 public class TxtLogger extends AbstractLogWriter {
     
-
     public TxtLogger(String fileName) throws IOException {
-        
         if (!fileName.endsWith(".txt")) {
             fileName += ".txt";
         }

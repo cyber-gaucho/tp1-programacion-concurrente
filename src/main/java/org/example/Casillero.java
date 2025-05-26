@@ -11,6 +11,25 @@ public class Casillero {
         this.id = i + "-" + j;
     }
 
+    // Modificadores de Estado
+    
+    public synchronized boolean ocupar(){
+        if(this.estado != EstadoCasillero.VACIO){
+            return false;
+        }
+        this.estado = EstadoCasillero.OCUPADO;
+        this.contador++;
+        return true;
+    }
+    
+    public void vaciar(){
+        this.estado = EstadoCasillero.VACIO;
+    }
+    
+    public void fueraDeServicio(){
+        this.estado = EstadoCasillero.FUERA_DE_SERVICIO;
+    }
+
     // Getters
 
     public EstadoCasillero getEstado(){
@@ -19,28 +38,6 @@ public class Casillero {
 
     public int getContador(){
         return contador;
-    }
-
-    // Modificadores de Estado
-
-    public void ocupar(){
-        // Si se intenta ocupar un casillero que no está vacio, se lanza un error
-        // if(this.estado != EstadoCasillero.VACIO){
-        //     System.out.println("=====================================");
-        //     System.out.println("\nError en el casillero " + id +".\n");
-        //     System.out.println("=====================================\n");
-        // }
-        
-        this.estado = EstadoCasillero.OCUPADO;
-        this.contador++;
-    }
-
-    public void vaciar(){
-        this.estado = EstadoCasillero.VACIO;
-    }
-
-    public void fueraDeServicio(){
-        this.estado = EstadoCasillero.FUERA_DE_SERVICIO;
     }
 
     public String getId(){
