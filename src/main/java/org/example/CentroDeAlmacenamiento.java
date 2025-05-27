@@ -9,21 +9,35 @@ import org.example.excepciones.noHayCasillerosDisponiblesException;
 //import java.util.Random;
 
 public class CentroDeAlmacenamiento {
+    private static int contador = 0;
+    private final int id;
     private final Casillero[][] matriz;
     //private final Random rand = new Random();
-    private final String nombre;
 
-    public CentroDeAlmacenamiento(String nombreCentro, int alto, int ancho){
+    public CentroDeAlmacenamiento(int alto, int ancho){
         matriz = new Casillero[alto][ancho];
         for (int i = 0; i < alto; i++) {
             for (int j = 0; j < ancho; j++) {
                 matriz[i][j] = new Casillero(i,j);
             }
         }
-        this.nombre = nombreCentro;
+        this.id = ++contador;
     }
 
-    public synchronized Casillero obtenerCasillero() throws noHayCasillerosDisponiblesException {
+    /**
+     * Este método devuelve un casillero disponible de la matriz.
+     * Si no hay casilleros disponibles, lanza una excepción noHayCasillerosDisponiblesException.
+     * El método utiliza una lista de índices para acceder a los casilleros de manera aleatoria.
+     * Primero, se crea una lista de índices que representan la posición de cada casillero en la matriz.
+     * Luego, se desordena la lista de índices para acceder a los casilleros en un orden aleatorio.
+     * Finalmente, se itera sobre la lista de índices y se intenta ocupar cada casillero.
+     * Si se encuentra un casillero disponible, se devuelve.
+     * Si no se encuentra ningún casillero disponible, se lanza una excepción.
+     * @return Casillero disponible
+     * @throws noHayCasillerosDisponiblesException si no hay casilleros disponibles
+     * 
+     */
+    public Casillero obtenerCasillero() throws noHayCasillerosDisponiblesException {
         int filas = matriz.length;
         int columnas = matriz[0].length;
         int total = filas * columnas;
@@ -39,8 +53,7 @@ public class CentroDeAlmacenamiento {
             int i = idx / columnas;
             int j = idx % columnas;
             Casillero c = matriz[i][j];
-            if (c.getEstado() == EstadoCasillero.VACIO) {
-                c.ocupar();
+            if (c.ocupar()) {
                 return c;
             }
         }
@@ -87,7 +100,7 @@ public class CentroDeAlmacenamiento {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(nombre).append(": \n");
+        sb.append("\nCentro ").append(id).append(": \n");
         for (Casillero[] casilleros : matriz) {
             for (int j = 0; j < casilleros.length; j++) {
                 sb.append(casilleros[j]);
@@ -95,10 +108,10 @@ public class CentroDeAlmacenamiento {
             }
             sb.append("\n");
         }
-        sb.append("Total de casilleros: ").append(matriz.length * matriz[0].length).append("\n");
-        sb.append("Total de casilleros ocupados: ").append(getCasillerosOcupados()).append("\n");
-        sb.append("Total de casilleros disponibles: ").append(getCasillerosDisponibles()).append("\n");
-        sb.append("Total de casilleros fuera de servicio: ").append(getCasillerosFueraDeServicio()).append("\n");
+        sb.append("\nTotal de casilleros: ").append(matriz.length * matriz[0].length);
+        sb.append("\nTotal de casilleros ocupados: ").append(getCasillerosOcupados());
+        sb.append("\nTotal de casilleros disponibles: ").append(getCasillerosDisponibles());
+        sb.append("\nTotal de casilleros fuera de servicio: ").append(getCasillerosFueraDeServicio());
         return sb.toString();
     }
 }

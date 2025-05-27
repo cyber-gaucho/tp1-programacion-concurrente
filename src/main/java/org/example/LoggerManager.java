@@ -1,15 +1,17 @@
 package org.example;
 import java.io.IOException;
 
+/**
+ * LoggerManager es responsable de gestionar los registros de los pedidos verificados y fallidos.
+ * Se encarga de escribir la información en archivos de texto y CSV.
+ */
 public class LoggerManager implements Runnable {
     private TxtLogger txtLogger;
     private CsvLogger csvLogger;
+    private ConsoleLogger consoleLogger;
     private final SynchronizedList<Pedido> pedidosVerificados;
     private final SynchronizedList<Pedido> pedidosFallidos;
-    private final long inicio;
     private final CentroDeAlmacenamiento centro;
-
-    // private volatile boolean isActivo = true;
 
     public LoggerManager(String nombreTXT, String nombreCSV, SynchronizedList<Pedido> pedidosVerificados,
                         SynchronizedList<Pedido> pedidosFallidos, CentroDeAlmacenamiento centro) {
@@ -20,14 +22,15 @@ public class LoggerManager implements Runnable {
             System.err.println("Error al crear los archivos de log: " + e.getMessage());
             
         }
+        this.consoleLogger = new ConsoleLogger();
         this.pedidosVerificados = pedidosVerificados;
         this.pedidosFallidos = pedidosFallidos;
-        inicio = System.currentTimeMillis();
         this.centro = centro;
     }
 
     @Override
     public void run() {
+        long inicio = System.currentTimeMillis();
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
@@ -37,11 +40,12 @@ public class LoggerManager implements Runnable {
 
                     txtLogger.escribir(timestamp, verificados, fallidos);
                     csvLogger.escribir(timestamp, verificados, fallidos);
+                    consoleLogger.log(timestamp, verificados, fallidos);
 
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    System.out.println("LoggerManager interrupted");
+                    System.out.println("\nLoggerManager interrupted");
                     break;
                 } catch (IOException e) {
                     System.out.println("Error al escribir en archivos de log.");
@@ -50,17 +54,15 @@ public class LoggerManager implements Runnable {
             }
         } finally {          
             try {
-                    txtLogger.escribir("\n========== FIN DE LA EJECUCIÓN ==========\n");
-                    txtLogger.escribir("Duración total: " + (System.currentTimeMillis() - inicio) + " ms\n");
+                    txtLogger.escribir("\n========== FIN DE LA EJECUCIÓN ==========");
+                    txtLogger.escribir("\nDuración total: " + (System.currentTimeMillis() - inicio) + " ms");
                     txtLogger.escribir("\nPedidos verificados: " + pedidosVerificados.size());
                     txtLogger.escribir("\nPedidos fallidos: " + pedidosFallidos.size());
                     txtLogger.escribir(centro.toString());
-                    txtLogger.escribir("\n");
                 } catch (IOException e) {
-                    System.err.println("Error al escribir el resumen final en los archivos de log: " + e.getMessage());
+                    System.err.println("\nError al escribir el resumen final en los archivos de log: " + e.getMessage());
                 }
-
-            // Cerrar los archivos de log al finalizar
+            
             try {
                 txtLogger.close();
                 csvLogger.close();

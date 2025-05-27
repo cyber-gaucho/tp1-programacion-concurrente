@@ -1,0 +1,125 @@
+[0 ms] Verificados: 0,  Fallidos: 1
+[202 ms] Verificados: 3,  Fallidos: 2
+[403 ms] Verificados: 8,  Fallidos: 2
+[604 ms] Verificados: 12,  Fallidos: 3
+[806 ms] Verificados: 13,  Fallidos: 5
+[1007 ms] Verificados: 17,  Fallidos: 7
+[1208 ms] Verificados: 22,  Fallidos: 7
+[1409 ms] Verificados: 25,  Fallidos: 9
+[1611 ms] Verificados: 29,  Fallidos: 12
+[1813 ms] Verificados: 30,  Fallidos: 16
+[2015 ms] Verificados: 34,  Fallidos: 17
+[2216 ms] Verificados: 37,  Fallidos: 19
+[2419 ms] Verificados: 41,  Fallidos: 20
+[2620 ms] Verificados: 44,  Fallidos: 21
+[2821 ms] Verificados: 46,  Fallidos: 23
+[3023 ms] Verificados: 50,  Fallidos: 23
+[3224 ms] Verificados: 53,  Fallidos: 24
+[3426 ms] Verificados: 58,  Fallidos: 29
+[3628 ms] Verificados: 60,  Fallidos: 31
+[3829 ms] Verificados: 61,  Fallidos: 33
+[4030 ms] Verificados: 66,  Fallidos: 34
+[4231 ms] Verificados: 71,  Fallidos: 36
+[4432 ms] Verificados: 72,  Fallidos: 39
+[4632 ms] Verificados: 75,  Fallidos: 41
+[4833 ms] Verificados: 77,  Fallidos: 43
+[5034 ms] Verificados: 81,  Fallidos: 45
+[5235 ms] Verificados: 84,  Fallidos: 45
+[5436 ms] Verificados: 88,  Fallidos: 47
+[5637 ms] Verificados: 93,  Fallidos: 47
+[5838 ms] Verificados: 98,  Fallidos: 49
+[6039 ms] Verificados: 101,  Fallidos: 49
+[6240 ms] Verificados: 104,  Fallidos: 50
+[6442 ms] Verificados: 109,  Fallidos: 50
+[6644 ms] Verificados: 114,  Fallidos: 53
+[6845 ms] Verificados: 118,  Fallidos: 53
+[7046 ms] Verificados: 120,  Fallidos: 57
+[7247 ms] Verificados: 123,  Fallidos: 58
+[7448 ms] Verificados: 126,  Fallidos: 60
+[7649 ms] Verificados: 128,  Fallidos: 63
+[7849 ms] Verificados: 132,  Fallidos: 64
+[8051 ms] Verificados: 135,  Fallidos: 64
+[8252 ms] Verificados: 139,  Fallidos: 65
+[8453 ms] Verificados: 142,  Fallidos: 66
+[8654 ms] Verificados: 147,  Fallidos: 67
+[8855 ms] Verificados: 150,  Fallidos: 70
+[9056 ms] Verificados: 154,  Fallidos: 72
+[9259 ms] Verificados: 157,  Fallidos: 73
+[9460 ms] Verificados: 160,  Fallidos: 76
+[9661 ms] Verificados: 163,  Fallidos: 77
+[9862 ms] Verificados: 167,  Fallidos: 78
+[10063 ms] Verificados: 172,  Fallidos: 79
+[10264 ms] Verificados: 175,  Fallidos: 81
+[10465 ms] Verificados: 179,  Fallidos: 81
+[10666 ms] Verificados: 181,  Fallidos: 84
+[10867 ms] Verificados: 184,  Fallidos: 87
+[11068 ms] Verificados: 187,  Fallidos: 88
+[11269 ms] Verificados: 190,  Fallidos: 91
+[11470 ms] Verificados: 194,  Fallidos: 92
+[11671 ms] Verificados: 196,  Fallidos: 94
+[11872 ms] Verificados: 199,  Fallidos: 96
+[12073 ms] Verificados: 202,  Fallidos: 96
+[12274 ms] Verificados: 208,  Fallidos: 97
+[12475 ms] Verificados: 211,  Fallidos: 98
+[12676 ms] Verificados: 215,  Fallidos: 100
+[12878 ms] Verificados: 218,  Fallidos: 101
+[13079 ms] Verificados: 221,  Fallidos: 103
+[13279 ms] Verificados: 223,  Fallidos: 106
+[13480 ms] Verificados: 227,  Fallidos: 108
+[13681 ms] Verificados: 231,  Fallidos: 110
+[13882 ms] Verificados: 234,  Fallidos: 111
+[14083 ms] Verificados: 238,  Fallidos: 112
+[14284 ms] Verificados: 242,  Fallidos: 113
+[14485 ms] Verificados: 244,  Fallidos: 114
+[14685 ms] Verificados: 249,  Fallidos: 116
+[14886 ms] Verificados: 252,  Fallidos: 116
+[15087 ms] Verificados: 257,  Fallidos: 116
+[15288 ms] Verificados: 264,  Fallidos: 117
+[15489 ms] Verificados: 269,  Fallidos: 117
+[15689 ms] Verificados: 273,  Fallidos: 118
+[15890 ms] Verificados: 278,  Fallidos: 120
+[16091 ms] Verificados: 280,  Fallidos: 121
+[16291 ms] Verificados: 285,  Fallidos: 122
+[16493 ms] Verificados: 289,  Fallidos: 124
+[16694 ms] Verificados: 292,  Fallidos: 126
+[16895 ms] Verificados: 296,  Fallidos: 126
+[17098 ms] Verificados: 301,  Fallidos: 127
+[17300 ms] Verificados: 303,  Fallidos: 129
+[17501 ms] Verificados: 307,  Fallidos: 130
+[17702 ms] Verificados: 311,  Fallidos: 131
+[17903 ms] Verificados: 313,  Fallidos: 133
+[18103 ms] Verificados: 317,  Fallidos: 134
+[18304 ms] Verificados: 322,  Fallidos: 134
+[18505 ms] Verificados: 328,  Fallidos: 134
+[18706 ms] Verificados: 331,  Fallidos: 135
+[18907 ms] Verificados: 336,  Fallidos: 137
+[19108 ms] Verificados: 340,  Fallidos: 138
+[19308 ms] Verificados: 341,  Fallidos: 141
+[19510 ms] Verificados: 346,  Fallidos: 141
+[19712 ms] Verificados: 350,  Fallidos: 143
+[19913 ms] Verificados: 355,  Fallidos: 143
+
+========== FIN DE LA EJECUCIÓN ==========
+
+Duración total: 20056 ms
+
+Pedidos verificados: 357
+
+Pedidos fallidos: 143
+
+Centro 2: 
+4(V) 2(X) 3(V) 4(V) 2(V) 4(V) 1(X) 2(V) 1(V) 5(X) 1(X) 3(V) 2(V) 1(X) 1(X) 4(V) 4(V) 1(X) 4(V) 5(V) 
+1(X) 4(X) 3(X) 3(V) 1(X) 1(V) 3(V) 1(V) 5(X) 3(V) 4(X) 4(V) 2(X) 2(V) 2(V) 3(V) 3(X) 3(X) 2(V) 1(V) 
+3(V) 1(X) 2(V) 1(V) 2(X) 2(V) 3(V) 2(X) 4(V) 1(V) 3(V) 3(V) 3(V) 4(V) 5(V) 2(V) 3(V) 3(X) 2(X) 3(V) 
+4(X) 3(X) 1(V) 2(X) 2(V) 2(X) 4(V) 1(X) 1(V) 2(X) 4(X) 5(V) 1(X) 3(V) 5(V) 4(V) 5(V) 2(X) 3(X) 4(V) 
+3(V) 2(V) 3(V) 1(X) 5(V) 3(X) 1(X) 2(V) 2(V) 2(V) 1(X) 2(X) 2(X) 2(V) 1(X) 3(V) 2(V) 4(V) 5(V) 1(X) 
+4(V) 1(X) 2(X) 2(V) 2(V) 4(V) 1(X) 3(V) 3(V) 3(X) 1(X) 2(X) 1(X) 4(V) 3(V) 1(X) 3(X) 5(V) 1(V) 6(V) 
+2(V) 3(V) 1(V) 3(X) 1(X) 3(V) 3(X) 2(X) 1(X) 4(V) 5(V) 3(X) 7(V) 1(X) 4(V) 1(X) 4(V) 5(V) 3(V) 1(V) 
+1(V) 2(V) 2(V) 5(V) 2(X) 1(X) 2(V) 1(X) 5(V) 1(V) 2(X) 2(V) 3(V) 1(X) 1(V) 2(X) 1(V) 1(X) 1(X) 1(X) 
+4(V) 1(V) 1(V) 2(V) 3(V) 1(X) 4(V) 1(V) 2(X) 2(V) 3(V) 2(X) 3(V) 4(V) 1(X) 1(X) 2(X) 2(V) 1(X) 1(V) 
+1(X) 4(V) 1(X) 1(X) 2(V) 2(V) 3(X) 4(V) 2(V) 3(V) 2(V) 1(V) 5(V) 2(V) 2(X) 1(V) 3(V) 2(V) 4(X) 6(V) 
+
+Total de casilleros: 200
+Total de casilleros ocupados: 0
+Total de casilleros disponibles: 122
+Total de casilleros fuera de servicio: 78

@@ -1,8 +1,13 @@
 package org.example;
-import java.util.Random;
 
+import java.util.Random;
 import org.example.excepciones.ListaVaciaException;
 
+/**
+ * Clase abstracta que representa un distribuidor de pedidos.
+ * Esta clase implementa la interfaz Runnable y proporciona la funcionalidad básica
+ * para procesar pedidos.
+ */
 public abstract class Distribuidor implements Runnable {
     protected final SynchronizedList<Pedido> origen;
     protected final SynchronizedList<Pedido> exitosos;
@@ -24,9 +29,8 @@ public abstract class Distribuidor implements Runnable {
     protected long getTiempoDeEspera(){
         double media = 80;
         double desviacion = 15;
-        double delay = media + desviacion * random.nextGaussian(); //random.nextGaussian() devuelve
-        // un double a partir de una distribución normal con media 0 y desvío estándar 1
-        delay = Math.max(50, Math.min(110, delay)); //propone valores máximos y mínimos para el delay
+        double delay = media + desviacion * random.nextGaussian(); 
+        delay = Math.max(50, Math.min(110, delay));
         
         return (long) delay;
     }
@@ -64,12 +68,12 @@ public abstract class Distribuidor implements Runnable {
             } catch (ListaVaciaException e) {
                 try {
                     //System.out.println(this + ":ERROR LISTA VACIA");
-                    Thread.sleep(100); // espera antes de reintentar
+                    Thread.sleep(100);
                 } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt(); // importante: respetar la interrupción
+                    Thread.currentThread().interrupt();
                 }
             } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt(); // importante: respetar la interrupción
+                Thread.currentThread().interrupt();
             }
         }
         System.out.println(this + ": Se procesaron " + contadorExitosos + " pedidos exitosos y " + contadorFallidos + " pedidos fallidos.");
