@@ -1,34 +1,39 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.LinkedBlockingDeque;
 
-public abstract class Distribuidor extends Thread {
-    protected final LinkedBlockingDeque<Pedido> origen;
-    protected final LinkedBlockingDeque<Pedido> exitosos;
-    protected final LinkedBlockingDeque<Pedido> fallidos;
+import org.example.excepciones.ListaVaciaException;
+
+/**
+ * Clase abstracta que representa un distribuidor de pedidos.
+ * Esta clase implementa la interfaz Runnable y proporciona la funcionalidad básica
+ * para procesar pedidos.
+ */
+public abstract class Distribuidor implements Runnable {
+    protected final SynchronizedList<Pedido> origen;
+    protected final SynchronizedList<Pedido> exitosos;
+    protected final SynchronizedList<Pedido> fallidos;
     protected final Random random = new Random();
 
-    public Distribuidor(LinkedBlockingDeque<Pedido> origen, LinkedBlockingDeque<Pedido> exitosos, LinkedBlockingDeque<Pedido> fallidos){
+    public Distribuidor(SynchronizedList<Pedido> origen, SynchronizedList<Pedido> exitosos, SynchronizedList<Pedido> fallidos){
         this.origen = origen;
         this.exitosos = exitosos;
         this.fallidos = fallidos;
     }
 
     protected abstract double getProbabilidadFallo();
-    protected abstract void cambiarEstado(Pedido pedido);
+    protected abstract void trabajar(Pedido pedido);
     protected abstract String mensajeExito();
+
     protected void fallarPedido(Pedido pedido){
         pedido.setEstado(EstadoPedido.FALLIDO);
     }
+
     protected long getTiempoDeEspera(){
         double media = 80;
         double desviacion = 15;
-        double delay = media + desviacion * random.nextGaussian(); //random.nextGaussian() devuelve
-        // un doble a partir de una distribución normal con media cera y desvío estándar 1
-        delay = Math.max(50, Math.min(110, delay)); //propone valores máximos y mínimos para el delay
+        double delay = media + desviacion * random.nextGaussian(); 
+        delay = Math.max(50, Math.min(110, delay));
         
         return (long) delay;
     }
@@ -36,47 +41,29 @@ public abstract class Distribuidor extends Thread {
     @Override
     public void run(){
         while(!Thread.currentThread().isInterrupted()){
+            Pedido pedido = null;
             try {
-                Pedido pedido = obtenerPedidoAleatorio(origen); //devuelve un pedido o tira excepcion
-                cambiarEstado(pedido);
-
+                pedido = origen.removeRandom();
+                
                 if (random.nextDouble() < getProbabilidadFallo()){
                     fallarPedido(pedido);
-                    fallidos.offer(pedido); // .offer() no tira exception
-
-                    //System.out.println(this + ": Falló el " + pedido);
+                    fallidos.add(pedido);
                 }
                 else {
-                    cambiarEstado(pedido);
-                    exitosos.offer(pedido);
-                    //System.out.println(mensajeExito() + pedido);
+                    trabajar(pedido);
+                    exitosos.add(pedido);
                 }
 
                 Thread.sleep(getTiempoDeEspera());
             } catch (ListaVaciaException e) {
                 try {
-                    //System.out.println(this + ":ERROR LISTA VACIA");
-                    Thread.sleep(200); // espera antes de reintentar
+                    Thread.sleep(100);
                 } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt(); // importante: respetar la interrupción
+                    Thread.currentThread().interrupt();
                 }
             } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt(); // importante: respetar la interrupción
+                Thread.currentThread().interrupt();
             }
-        }
-    }
-
-    private Pedido obtenerPedidoAleatorio(LinkedBlockingDeque<Pedido> deque) throws ListaVaciaException {
-        synchronized (deque) {
-            if (deque.isEmpty()) {
-                throw new ListaVaciaException("");
-            }
-            List<Pedido> snapshot = new ArrayList<>(deque); // copia la deque a una arraylist
-            int index = random.nextInt(snapshot.size()); // prepara el indice random
-            Pedido elegido = snapshot.get(index); // obtiene el objeto Pedido random que queremos sacar
-            deque.remove(elegido);  // elimina solo ese pedido
-
-            return elegido;
         }
     }
 }

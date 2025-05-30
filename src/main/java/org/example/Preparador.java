@@ -1,83 +1,73 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.LinkedBlockingDeque;
+import org.example.excepciones.ListaVaciaException;
+import org.example.excepciones.noHayCasillerosDisponiblesException;
 
-public class Preparador extends Thread {
-
+public class Preparador implements Runnable {
     private static int contador = 0;
     private final int id;
-
-    private final LinkedBlockingDeque<Pedido> pedidosNuevos;
-    private final LinkedBlockingDeque<Pedido> pedidosPreparados;
+    private final SynchronizedList<Pedido> pedidosNuevos;
+    private final SynchronizedList<Pedido> pedidosPreparados;
     private final CentroDeAlmacenamiento centro;
-    private volatile boolean isActivo = true;
     private final Random random = new Random();
 
-    public Preparador(LinkedBlockingDeque<Pedido> pedidosNuevos, LinkedBlockingDeque<Pedido> pedidosPreparados, CentroDeAlmacenamiento centro) {
+    public Preparador(SynchronizedList<Pedido> pedidosNuevos, SynchronizedList<Pedido> pedidosPreparados, CentroDeAlmacenamiento centro) {
         this.id = ++contador;
         this.pedidosNuevos = pedidosNuevos;
         this.pedidosPreparados = pedidosPreparados;
         this.centro = centro;
     }
-    
+
     @Override
     public void run() {
-        while(isActivo && !Thread.currentThread().isInterrupted()){
+        while (!Thread.currentThread().isInterrupted()) {
+            Pedido pedido = null;
             try {
+                pedido = pedidosNuevos.removeRandom();
+
                 Casillero casillero = centro.obtenerCasillero();
-                Pedido pedido = obtenerPedidoAleatorio(pedidosNuevos);
-
-                if (pedido == null) {
-                    isActivo = false;
-                    break;
-                }
-
-                pedido.setEstado(EstadoPedido.PREPARADO);
-                pedido.setCasillero(casillero); //Esto también ocupa el casillero con casillero.ocupar()
                 
-                pedidosPreparados.put(pedido);
-                //System.out.println(this + ": Se preparó el " + pedido);
-                
+                pedido.setCasillero(casillero);
+                pedido.setEstado(EstadoPedido.PREPARADO);                    
+                pedidosPreparados.add(pedido);
                 Thread.sleep(getTiempoDeEspera());
 
-            } catch (noHayCasillerosDisponiblesException e) {
+            } catch (ListaVaciaException e) {                
+                Thread.currentThread().interrupt();
+                return;
+            } catch (noHayCasillerosDisponiblesException e) {           
+                if (pedido != null) {
+                    pedidosNuevos.add(pedido);
+                }
                 try {
-                    //System.out.println(this + ": ERROR noHayCasillerosDisponibles");
-                    Thread.sleep(150);
+                    Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
-                    return;
                 }
+                return;
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
             }
         }
     }
-    
-    private Pedido obtenerPedidoAleatorio(LinkedBlockingDeque<Pedido> deque) {
-        synchronized (deque) {
-            if (deque.isEmpty()) return null;
 
-            List<Pedido> snapshot = new ArrayList<>(deque); // copia la deque a una arraylist
-            int index = random.nextInt(snapshot.size()); // prepara el indice random
-            Pedido elegido = snapshot.get(index); // obtiene el objeto Pedido random que queremos sacar
-            deque.remove(elegido);  // elimina solo ese pedido
-          
-            return elegido;
-        }
-    }
-
+    /**
+     * Calcula un tiempo de espera aleatorio basado en una distribución normal.
+     * 
+     * Este método genera un valor aleatorio utilizando una distribución normal (gaussiana)
+     * con una media de 80 milisegundos y una desviación estándar de 15 milisegundos.
+     * El valor generado se ajusta para que esté dentro del rango de 50 a 110 milisegundos.
+     * El resultado se convierte a un valor de tipo `long` antes de ser retornado.
+     * 
+     * @return Un valor aleatorio limitado entre 50 y 110.
+     */
     private long getTiempoDeEspera(){
         double media = 80;
         double desviacion = 15;
-        double delay = media + desviacion * random.nextGaussian();//random.nextGaussian() devuelve
-        // un doble a partir de una distribución normal con media cera y desvío estándar 1
-        delay = Math.max(50, Math.min(110, delay)); //propone valores maximos y minimos para el delay
-        
+        double delay = media + desviacion * random.nextGaussian();
+        delay = Math.max(50, Math.min(110, delay));        
         return (long) delay;
     }
 

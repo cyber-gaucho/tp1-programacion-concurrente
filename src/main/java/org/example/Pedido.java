@@ -6,14 +6,9 @@ public class Pedido {
     private Casillero casillero;
     private EstadoPedido estado;
 
-
+    
     public Pedido() {
         this.id = ++contador;
-        this.estado = EstadoPedido.NUEVO;
-    }
-
-    public Pedido(int id){
-        this.id = id;
         this.estado = EstadoPedido.NUEVO;
     }
 
@@ -23,7 +18,6 @@ public class Pedido {
 
     public void setCasillero(Casillero casillero) {
         this.casillero = casillero;
-        casillero.ocupar();
     }
 
     public Casillero getCasillero() {
@@ -36,12 +30,6 @@ public class Pedido {
 
     public void setEstado(EstadoPedido estado) {
         this.estado = estado;
-        if(estado == EstadoPedido.EN_TRANSITO ){
-            casillero.vaciar();
-        }
-        if(estado == EstadoPedido.FALLIDO){
-            if(casillero != null) casillero.fueraDeServicio();
-        }
     }
 
     @Override

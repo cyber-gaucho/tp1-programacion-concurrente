@@ -1,12 +1,10 @@
 package org.example;
 
-import java.util.concurrent.LinkedBlockingDeque;
-
 public class Despachador extends Distribuidor{
     private static int contador = 0;
     private final int id;
 
-    public Despachador(LinkedBlockingDeque<Pedido> origen, LinkedBlockingDeque<Pedido> exitosos, LinkedBlockingDeque<Pedido> fallidos){
+    public Despachador(SynchronizedList<Pedido> origen, SynchronizedList<Pedido> exitosos, SynchronizedList<Pedido> fallidos){
         super(origen, exitosos, fallidos);
         this.id = ++contador;
     }
@@ -17,8 +15,9 @@ public class Despachador extends Distribuidor{
     }
 
     @Override
-    protected void cambiarEstado(Pedido pedido) {
+    protected void trabajar(Pedido pedido) {
         pedido.setEstado(EstadoPedido.EN_TRANSITO);
+        pedido.getCasillero().vaciar();
     }
 
     @Override
@@ -29,5 +28,11 @@ public class Despachador extends Distribuidor{
     @Override
     public String toString(){
         return "Despachador " + id;
+    }
+
+    @Override
+    protected void fallarPedido(Pedido pedido) {
+        pedido.setEstado(EstadoPedido.FALLIDO);
+        pedido.getCasillero().fueraDeServicio();
     }
 }

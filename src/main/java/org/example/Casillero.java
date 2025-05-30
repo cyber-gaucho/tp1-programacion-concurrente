@@ -10,41 +10,41 @@ public class Casillero {
         this.contador = 0;
         this.id = i + "-" + j;
     }
-
-    // Getters
-
-    public EstadoCasillero getEstado(){
-        return estado;
-    }
-
-    public int getContador(){
-        return contador;
-    }
-
-    // Modificadores de Estado
-
-    public void ocupar(){
+    
+    public synchronized boolean ocupar(){
+        if(this.estado != EstadoCasillero.VACIO){
+            return false;
+        }
         this.estado = EstadoCasillero.OCUPADO;
         this.contador++;
+        return true;
     }
-
-    public void vaciar(){
+    
+    public synchronized void vaciar(){
         this.estado = EstadoCasillero.VACIO;
     }
-
-    public void fueraDeServicio(){
+    
+    public synchronized void fueraDeServicio(){
         this.estado = EstadoCasillero.FUERA_DE_SERVICIO;
     }
 
-    public String getId(){
+    public synchronized EstadoCasillero getEstado(){
+        return estado;
+    }
+
+    public synchronized int getContador(){
+        return contador;
+    }
+
+    public synchronized String getId(){
         return id;
     }
 
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append(contador);
-        switch (this.estado) {
+        sb.append(getContador());
+        switch (getEstado()) {
             case VACIO -> sb.append("(V)");
             case OCUPADO -> sb.append("(O)");
             case FUERA_DE_SERVICIO -> sb.append("(X)");

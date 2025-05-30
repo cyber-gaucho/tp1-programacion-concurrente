@@ -1,12 +1,10 @@
 package org.example;
 
-import java.util.concurrent.LinkedBlockingDeque;
-
 public class Verificador extends Distribuidor{
     private static int contador = 0;
     private final int id;
 
-    public Verificador(LinkedBlockingDeque<Pedido> origen, LinkedBlockingDeque<Pedido> exitosos, LinkedBlockingDeque<Pedido> fallidos){
+    public Verificador(SynchronizedList<Pedido> origen, SynchronizedList<Pedido> exitosos, SynchronizedList<Pedido> fallidos){
         super(origen, exitosos, fallidos);
         this.id = ++contador;
     }
@@ -17,7 +15,7 @@ public class Verificador extends Distribuidor{
     }
 
     @Override
-    protected void cambiarEstado(Pedido pedido) {
+    protected void trabajar(Pedido pedido) {
         pedido.setEstado(EstadoPedido.VERIFICADO);
     }
 

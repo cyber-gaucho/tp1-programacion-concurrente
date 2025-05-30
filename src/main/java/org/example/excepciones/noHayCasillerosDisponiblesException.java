@@ -1,7 +1,7 @@
-package org.example;
+package org.example.excepciones;
 
 public class noHayCasillerosDisponiblesException extends Exception{
     public noHayCasillerosDisponiblesException(){
-
+        
     }
 }
