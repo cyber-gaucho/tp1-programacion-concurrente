@@ -2,6 +2,8 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import org.example.excepciones.ListaVaciaException;
 
 /**
@@ -12,15 +14,21 @@ import org.example.excepciones.ListaVaciaException;
  */
 public class SynchronizedList<T> {
     private final ArrayList<T> list = new ArrayList<>();
+    private final Random random = new Random();
 
     public synchronized void add(T element) {
         list.add(element);
     }
 
     public synchronized T remove(int index) {
-        if (index < 0 || index >= list.size()) {
-            throw new ListaVaciaException("La lista está vacía o el índice es inválido.");
+        return list.remove(index);
+    }
+
+    public synchronized T removeRandom() throws ListaVaciaException {
+        if (list.isEmpty()) {
+            throw new ListaVaciaException("La lista está vacía.");
         }
+        int index = random.nextInt(list.size());
         return list.remove(index);
     }
 

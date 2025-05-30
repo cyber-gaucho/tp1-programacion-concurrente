@@ -10,7 +10,6 @@ public class Preparador implements Runnable {
     private final SynchronizedList<Pedido> pedidosNuevos;
     private final SynchronizedList<Pedido> pedidosPreparados;
     private final CentroDeAlmacenamiento centro;
-    private volatile boolean isActivo = true;
     private final Random random = new Random();
 
     public Preparador(SynchronizedList<Pedido> pedidosNuevos, SynchronizedList<Pedido> pedidosPreparados, CentroDeAlmacenamiento centro) {
@@ -22,26 +21,30 @@ public class Preparador implements Runnable {
 
     @Override
     public void run() {
-        while (isActivo && !Thread.currentThread().isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted()) {
+            Pedido pedido = null;
             try {
-                Pedido pedido;                
-                    if (!pedidosNuevos.isEmpty()) {
-                        pedido = pedidosNuevos.remove(random.nextInt(Math.max(pedidosNuevos.size(),1)));
-                    } else {
-                        throw new ListaVaciaException("La lista de pedidos nuevos está vacía.");
-                    }
-                try {
-                    Casillero casillero = centro.obtenerCasillero();
-                    pedido.setCasillero(casillero);
-                    pedido.setEstado(EstadoPedido.PREPARADO);                    
-                    pedidosPreparados.add(pedido);
-                    Thread.sleep(getTiempoDeEspera());
-                } catch (noHayCasillerosDisponiblesException e) {           
-                    pedidosNuevos.add(pedido);
-                    Thread.sleep(100);
-                }
+                pedido = pedidosNuevos.removeRandom();
+
+                Casillero casillero = centro.obtenerCasillero();
+                
+                pedido.setCasillero(casillero);
+                pedido.setEstado(EstadoPedido.PREPARADO);                    
+                pedidosPreparados.add(pedido);
+                Thread.sleep(getTiempoDeEspera());
+
             } catch (ListaVaciaException e) {                
                 Thread.currentThread().interrupt();
+                return;
+            } catch (noHayCasillerosDisponiblesException e) {           
+                if (pedido != null) {
+                    pedidosNuevos.add(pedido);
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
                 return;
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

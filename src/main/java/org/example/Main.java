@@ -52,6 +52,7 @@ public class Main {
             } 
         }
 
+        logger.interrupt();
         preparador1.interrupt();
         preparador2.interrupt();
         preparador3.interrupt();
@@ -62,7 +63,6 @@ public class Main {
         entregador3.interrupt();
         verificador1.interrupt();
         verificador2.interrupt();
-        logger.interrupt();
         
         try {
             logger.join();

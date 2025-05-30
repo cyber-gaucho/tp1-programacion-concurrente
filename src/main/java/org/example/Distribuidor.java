@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.Random;
+
 import org.example.excepciones.ListaVaciaException;
 
 /**
@@ -23,9 +24,11 @@ public abstract class Distribuidor implements Runnable {
     protected abstract double getProbabilidadFallo();
     protected abstract void trabajar(Pedido pedido);
     protected abstract String mensajeExito();
+
     protected void fallarPedido(Pedido pedido){
         pedido.setEstado(EstadoPedido.FALLIDO);
     }
+
     protected long getTiempoDeEspera(){
         double media = 80;
         double desviacion = 15;
@@ -38,15 +41,10 @@ public abstract class Distribuidor implements Runnable {
     @Override
     public void run(){
         while(!Thread.currentThread().isInterrupted()){
-            
+            Pedido pedido = null;
             try {
-                Pedido pedido;
-                if(!origen.isEmpty()) {
-                    pedido = origen.remove(random.nextInt(Math.max(origen.size(), 1))); //el argumento de nextInt() debe ser > 0
-                } else {
-                    throw new ListaVaciaException("La lista de origen está vacía.");
-                }
-
+                pedido = origen.removeRandom();
+                
                 if (random.nextDouble() < getProbabilidadFallo()){
                     fallarPedido(pedido);
                     fallidos.add(pedido);
@@ -57,11 +55,8 @@ public abstract class Distribuidor implements Runnable {
                 }
 
                 Thread.sleep(getTiempoDeEspera());
-
-            
             } catch (ListaVaciaException e) {
                 try {
-                    
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();

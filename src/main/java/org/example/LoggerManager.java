@@ -1,4 +1,5 @@
 package org.example;
+
 import java.io.IOException;
 
 import org.example.logger.ConsoleLogger;
@@ -15,7 +16,6 @@ public class LoggerManager implements Runnable {
     private ConsoleLogger consoleLogger;
     private final SynchronizedList<Pedido> pedidosVerificados;
     private final SynchronizedList<Pedido> pedidosFallidos;
-    private long inicio;
     private final CentroDeAlmacenamiento centro;
 
     public LoggerManager(String nombreTXT, String nombreCSV, SynchronizedList<Pedido> pedidosVerificados,
@@ -36,7 +36,7 @@ public class LoggerManager implements Runnable {
 
     @Override
     public void run() {
-        inicio = System.currentTimeMillis();
+        long inicio = System.currentTimeMillis();
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
@@ -51,11 +51,9 @@ public class LoggerManager implements Runnable {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    System.out.println("\nLoggerManager interrupted");
-                    break;
+                    break; // Sale del loop while y ejecuta el bloque finally
                 } catch (IOException e) {
-                    System.out.println("Error al escribir en archivos de log.");
-                    System.err.println("Error writing to log files: " + e.getMessage());
+                    System.err.println("Error al escribir en los archivos de log: " + e.getMessage());
                 }
             }
         } finally {          
@@ -73,10 +71,10 @@ public class LoggerManager implements Runnable {
             try {
                 txtLogger.close();
                 csvLogger.close();
-                System.out.println("Archivos de log cerrados correctamente.");
             } catch (IOException e) {
-                System.err.println("Error closing log files: " + e.getMessage());
+                System.err.println("Error cerrando los archivos de log: " + e.getMessage());
             }
+
             consoleLogger.log("\nTiempo de ejecución del programa: " + (fin - inicio) + "(ms)");
             consoleLogger.log("\nPedidos verificados: " + pedidosVerificados.size());
             consoleLogger.log("\nPedidos fallidos: " + pedidosFallidos.size());
