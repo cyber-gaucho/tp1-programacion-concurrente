@@ -37,8 +37,6 @@ public abstract class Distribuidor implements Runnable {
 
     @Override
     public void run(){
-        int contadorExitosos = 0;
-        int contadorFallidos = 0;
         while(!Thread.currentThread().isInterrupted()){
             
             try {
@@ -52,14 +50,10 @@ public abstract class Distribuidor implements Runnable {
                 if (random.nextDouble() < getProbabilidadFallo()){
                     fallarPedido(pedido);
                     fallidos.add(pedido);
-                    contadorFallidos++;
-                    //System.out.println(this + ": Falló el " + pedido);
                 }
                 else {
                     trabajar(pedido);
                     exitosos.add(pedido);
-                    contadorExitosos++;
-                    //System.out.println(mensajeExito() + pedido);
                 }
 
                 Thread.sleep(getTiempoDeEspera());
@@ -67,7 +61,7 @@ public abstract class Distribuidor implements Runnable {
             
             } catch (ListaVaciaException e) {
                 try {
-                    //System.out.println(this + ":ERROR LISTA VACIA");
+                    
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
@@ -76,6 +70,5 @@ public abstract class Distribuidor implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
-        System.out.println(this + ": Se procesaron " + contadorExitosos + " pedidos exitosos y " + contadorFallidos + " pedidos fallidos.");
     }
 }

@@ -1,11 +1,10 @@
-package org.example;
+package org.example.logger;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class TxtLogger extends AbstractLogWriter {
-    
     public TxtLogger(String fileName) throws IOException {
         if (!fileName.endsWith(".txt")) {
             fileName += ".txt";
@@ -21,5 +20,4 @@ public class TxtLogger extends AbstractLogWriter {
     public void escribir(String mensaje) throws IOException {
         write(mensaje);
     }
-
 }

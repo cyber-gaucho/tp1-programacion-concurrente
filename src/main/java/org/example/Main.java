@@ -4,8 +4,6 @@ public class Main {
 
     public static void main(String[] args) {
         int CANTIDAD_PEDIDOS = 500;
-        long inicio;
-        long fin;
         final String nombreTXT = "LogEstadísticoTXT.txt";
         final String nombreCSV = "LogEstadísticoCSV.csv";
 
@@ -33,8 +31,6 @@ public class Main {
             pedidosNuevos.add(new Pedido());
         }
 
-        inicio = System.currentTimeMillis();
-
         logger.start();
         preparador1.start();
         preparador2.start();
@@ -50,17 +46,12 @@ public class Main {
 
         while(pedidosFallidos.size() + pedidosVerificados.size() < CANTIDAD_PEDIDOS) {
             try {
-                System.out.println("[" + (System.currentTimeMillis() - inicio) + " ms] Verificados: "
-                                    + pedidosVerificados.size() + ",  Fallidos: " + pedidosFallidos.size());
                 Thread.sleep(200);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } 
         }
 
-        fin = System.currentTimeMillis();
-
-        logger.interrupt();
         preparador1.interrupt();
         preparador2.interrupt();
         preparador3.interrupt();
@@ -71,8 +62,7 @@ public class Main {
         entregador3.interrupt();
         verificador1.interrupt();
         verificador2.interrupt();
-
-
+        logger.interrupt();
         
         try {
             logger.join();
@@ -90,13 +80,5 @@ public class Main {
             Thread.currentThread().interrupt();
             System.err.println("El hilo principal fue interrumpido.");
         }
-        
-        System.out.println("\nTiempo de ejecución del programa: " + (fin - inicio) + "(ms)");
-        System.out.println("\nPedidos preparados: " + pedidosPreparados.size());
-        System.out.println("\nPedidos en transito: " + pedidosEnTransito.size());
-        System.out.println("\nPedidos entregados: " + pedidosEntregados.size());
-        System.out.println("\nPedidos verificados: " + pedidosVerificados.size());
-        System.out.println("\nPedidos fallidos: " + pedidosFallidos.size());
-        System.out.println("\n" + galponcito200);
     }
 }

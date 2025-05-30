@@ -6,11 +6,8 @@ import java.util.List;
 
 import org.example.excepciones.noHayCasillerosDisponiblesException;
 
-//import java.util.Random;
-
 public class CentroDeAlmacenamiento {
     private final Casillero[][] matriz;
-    //private final Random rand = new Random();
     private final String nombre;
 
     public CentroDeAlmacenamiento(String nombreCentro, int alto, int ancho){
@@ -33,7 +30,7 @@ public class CentroDeAlmacenamiento {
      * Si se encuentra un casillero disponible, se devuelve.
      * Si no se encuentra ningún casillero disponible, se lanza una excepción.
      * @return Casillero disponible
-     * @throws noHayCasillerosDisponiblesException si no hay casilleros disponibles
+     * @throws noHayCasillerosDisponiblesException
      * 
      */
     public Casillero obtenerCasillero() throws noHayCasillerosDisponiblesException {
@@ -46,7 +43,7 @@ public class CentroDeAlmacenamiento {
             indices.add(i);
         }
     
-        Collections.shuffle(indices); // desordenamos el orden de acceso
+        Collections.shuffle(indices);
     
         for (int idx : indices) {
             int i = idx / columnas;
@@ -56,7 +53,6 @@ public class CentroDeAlmacenamiento {
                 return c;
             }
         }
-    
         throw new noHayCasillerosDisponiblesException();
     }
 
@@ -99,7 +95,7 @@ public class CentroDeAlmacenamiento {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(": \n").append(nombre).append(": \n");
+        sb.append(nombre).append(":\n");
         for (Casillero[] casilleros : matriz) {
             for (int j = 0; j < casilleros.length; j++) {
                 sb.append(casilleros[j]);

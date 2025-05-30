@@ -34,16 +34,13 @@ public class Preparador implements Runnable {
                     Casillero casillero = centro.obtenerCasillero();
                     pedido.setCasillero(casillero);
                     pedido.setEstado(EstadoPedido.PREPARADO);                    
-                    pedidosPreparados.add(pedido);                    
-                    // System.out.println(this + ": Se preparó el " + pedido);
+                    pedidosPreparados.add(pedido);
                     Thread.sleep(getTiempoDeEspera());
                 } catch (noHayCasillerosDisponiblesException e) {           
                     pedidosNuevos.add(pedido);
-                    // System.out.println(this + ": No hay casilleros disponibles. Pedido devuelto a la lista de nuevos.");
                     Thread.sleep(100);
                 }
             } catch (ListaVaciaException e) {                
-                //System.out.println(this + ": Se acabaron los pedidos nuevos. Fin del hilo.");
                 Thread.currentThread().interrupt();
                 return;
             } catch (InterruptedException e) {
